@@ -15,6 +15,17 @@
         <maven.compiler.target>11</maven.compiler.target>
 
         <version.avaje.config>3.1</version.avaje.config>
+        
+    <java.release>11</java.release>
+    <nexus.staging.autoReleaseAfterClose>true</nexus.staging.autoReleaseAfterClose>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+    <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+    <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+    <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
+    <maven-failsafe-plugin.version>3.0.0</maven-failsafe-plugin.version>
+    <maven-release-plugin.version>3.0.0</maven-release-plugin.version>
+    <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     </properties>
 
     <dependencies>
@@ -23,11 +34,41 @@
             <artifactId>avaje-config</artifactId>
             <version>${version.avaje.config}</version>
         </dependency>
-
-        <dependency>
-            <groupId>io.avaje</groupId>
-            <artifactId>avaje-inject</artifactId>
-            <version>9.0</version>
-        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+    
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.11.0</version>
+          </plugin>
+          	<!-- Create the Runnable Jar with dependencies -->
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+                <version>3.4.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers combine.self="override">
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>org.example.bug.Launcher</mainClass>
+								</transformer>
+							</transformers>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<keepDependenciesWithProvidedScope>false</keepDependenciesWithProvidedScope>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+        </plugins>
+    </build>
 </project>
